@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>vixenweb — coming soon</title>
+  <meta name="description" content="The vixenweb portfolio is being built. Check back soon.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Syne:wght@800&family=Unbounded:wght@900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="is-locked">
+
+  <!-- Glass filter. The displacement map (#lg-map) is drawn by script.js to
+       match the notice's exact size and corner radius: it is neutral in the
+       middle and bends light only inside a thin band along the edge. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="lg" filterUnits="userSpaceOnUse" x="0" y="0" width="560" height="240" color-interpolation-filters="sRGB">
+      <feImage id="lg-map" x="0" y="0" width="560" height="240" preserveAspectRatio="none" result="map"/>
+      <feDisplacementMap id="lg-disp" in="SourceGraphic" in2="map" scale="28" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+  <!-- Background: very dark blue with a soft light from below -->
+  <div class="scene" aria-hidden="true" inert>
+    <span class="glow"></span>
+    <span class="grain"></span>
+  </div>
+
+  <!-- Page content -->
+  <main class="page" inert>
+    <h1 class="wordmark">
+      <span class="wordmark__glow" aria-hidden="true">vixenweb</span>
+      <span class="wordmark__text">vixenweb</span>
+    </h1>
+  </main>
+
+  <!-- Blur layer: sits over the page while the notice is open -->
+  <div class="veil" aria-hidden="true"></div>
+
+  <!-- Notice (no close button on purpose) -->
+  <section class="notice" id="notice" role="alertdialog" aria-modal="true"
+           aria-labelledby="notice-title" aria-describedby="notice-text" tabindex="-1">
+    <span class="notice__pane" id="notice-pane" aria-hidden="true"></span>
+    <span class="notice__aura" aria-hidden="true"></span>
+    <span class="notice__ring" aria-hidden="true"></span>
+    <div class="notice__body">
+      <h2 class="notice__title" id="notice-title">We're still working on the site.</h2>
+      <p class="notice__text" id="notice-text">
+        Thanks for stopping by. The new vixenweb is taking shape, so please come back a little later.
+      </p>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

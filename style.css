@@ -1,0 +1,223 @@
+:root {
+  --ink: #dfeaed;
+  --ink-soft: #dfeaedc4;
+  --night: #03070c;
+  --deep: #07131c;
+  --ice: #4e7f8c;        /* muted icy blue */
+  --ice-light: #8fb3bc;
+  --radius: 28px;
+  /* Used only if JS is off; script.js animates the real one */
+  --ring-static: conic-gradient(from 0deg, #1f4d73, #3f88ad, #9fd4e6, #e6f6fb, #7cbcd8, #34739f, #234b86, #2f6f8f, #1f4d73);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+
+body {
+  font-family: "DM Sans", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--night);
+}
+.is-locked { overflow: hidden; }
+
+/* ---------- Background: very dark blue, soft light from below ---------- */
+.scene {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 0%, transparent 35%, #000000b3 100%),
+    repeating-linear-gradient(90deg, #8fb3bc08 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(0deg,  #8fb3bc08 0 1px, transparent 1px 64px),
+    linear-gradient(180deg, #02050a 0%, #040a10 55%, var(--deep) 100%);
+}
+
+/* A wide, gentle wash of light rising from the bottom edge */
+.glow {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 150vw;
+  height: 80vh;
+  translate: -50% 0;
+  background: radial-gradient(ellipse 50% 100% at 50% 100%,
+    #2f667559 0%,
+    #1c46553d 32%,
+    #0f2a3619 62%,
+    transparent 100%);
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Wordmark ---------- */
+.page {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding: clamp(28px, 8vh, 84px) clamp(20px, 6vw, 100px) 0;
+}
+
+.wordmark {
+  position: relative;
+  margin: 0;
+  font-family: "Unbounded", "Syne", system-ui, sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.8rem, 13vw, 11rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-align: center;
+}
+
+.wordmark__glow {
+  position: absolute;
+  inset: 0;
+  color: var(--ice);
+  filter: blur(34px);
+  opacity: 0.28;
+  transform: translateY(0.06em);
+}
+
+.wordmark__text {
+  position: relative;
+  display: block;
+  background: linear-gradient(180deg, #d7e6ea 6%, #97b5be 40%, #5d8391 76%, #37535f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 0.025em 0 #061219)
+    drop-shadow(0 0.06em 0.05em #030c12b3)
+    drop-shadow(0 0.16em 0.22em #000000a6);
+}
+
+/* ---------- Blur veil ---------- */
+.veil {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: #03070c8c;
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+  animation: fade-in 0.6s ease-out both;
+}
+
+/* ---------- Glass notice ----------
+   .notice has no backdrop-filter or opacity animation of its own, so the
+   pane inside it can see the page behind. */
+.notice {
+  --mx: 50%;
+  --my: 0%;
+  position: fixed;
+  z-index: 11;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: min(560px, calc(100vw - 32px));
+  border-radius: var(--radius);
+  outline: none;
+  animation: notice-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+}
+
+/* The glass. url(#lg) bends light only along the edge band (see script.js);
+   the interior stays undistorted. */
+.notice__pane {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(260px circle at var(--mx) var(--my), #b4d0d71f, transparent 70%);
+  -webkit-backdrop-filter: url(#lg) blur(3px) saturate(180%);
+  backdrop-filter: url(#lg) blur(3px) saturate(180%);
+  border: 1px solid #a9c6cd26;
+  box-shadow:
+    inset 0 1px 0 #ffffff3d,
+    inset 0 -1px 0 #ffffff0f,
+    0 30px 80px #00000099;
+}
+
+/* ---------- Endless light around the edge ----------
+   One continuous band of icy blues runs around the whole border.
+   script.js writes the gradient into --ring on the two pieces below,
+   spacing the colours evenly along the perimeter so the light moves at
+   a constant speed. */
+.notice__ring,
+.notice__aura::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--w);
+  pointer-events: none;
+  background: var(--ring, var(--ring-static));
+  /* keep only the ring: paint the whole box, subtract the inside */
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.notice__ring { --w: 1.5px; z-index: 1; }
+
+/* Same ring, blurred, for the glow */
+.notice__aura {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  filter: blur(9px);
+  opacity: 0.55;
+}
+.notice__aura::before { --w: 4px; }
+
+.notice__body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(24px, 5vw, 40px);
+}
+
+.notice__title {
+  margin: 0;
+  font-family: "Syne", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 16px #00000073;
+}
+
+.notice__text {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+@keyframes fade-in   { from { opacity: 0; } }
+/* Transform only: fading opacity would flatten the glass while it plays */
+@keyframes notice-in { from { transform: translateY(16px) scale(0.98); } }
+
+/* Browsers without SVG filters in backdrop-filter: plain frosted glass */
+@supports not (backdrop-filter: url(#lg)) {
+  .notice__pane {
+    -webkit-backdrop-filter: blur(3px) saturate(180%);
+    backdrop-filter: blur(3px) saturate(180%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .veil { animation: none; }
+  .notice { animation: none; }
+}
