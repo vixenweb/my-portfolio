@@ -81,9 +81,13 @@ if (document.fonts) document.fonts.ready.then(() => { buildMap(); buildRing(); }
    (the light would race along the long sides). So instead, the colour
    stops are placed at points spaced evenly along the perimeter, and the
    colours slide along them: constant speed everywhere, including corners. */
-const LOOP_SECONDS = 8; // time for the light to travel once around the box
+const LOOP_SECONDS = 6; // time for the light to travel once around the box
 const SAMPLES = 96;     // colour stops around the border
-const PALETTE = ["#1f4d73", "#3f88ad", "#9fd4e6", "#e6f6fb", "#7cbcd8", "#34739f", "#234b86", "#2f6f8f"].map(hexToRgb);
+// One bright peak that fades into a dimmer band and back, so the light reads as travelling.
+const PALETTES = {
+  dark:  ["#eaf9ff", "#9bd6ec", "#4f9fc8", "#24587f", "#143550", "#0f2a3f", "#163e5d", "#2f78a6"].map(hexToRgb),
+  light: ["#0a2f52", "#1d5f8f", "#4a9cc4", "#9fd0e4", "#cfe6f0", "#9fd0e4", "#4a9cc4", "#1d5f8f"].map(hexToRgb),
+};
 
 const ringEls = [...document.querySelectorAll(".notice__ring, .notice__aura")];
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -97,6 +101,7 @@ function hexToRgb(hex) {
 
 // colour at position f (0..1) around a seamless loop of the palette
 function paletteAt(f) {
+  const PALETTE = PALETTES[document.documentElement.dataset.theme] || PALETTES.dark;
   const p = f * PALETTE.length;
   const i = Math.floor(p);
   const k = p - i;
@@ -164,6 +169,8 @@ function paintRing(u) {
   const value = `conic-gradient(from 0deg, ${stops.join(", ")})`;
   ringEls.forEach((el) => el.style.setProperty("--ring", value));
 }
+
+window.addEventListener("themechange", () => paintRing(((performance.now() - startTime) / 1000 / LOOP_SECONDS) % 1));
 
 function tick(now) {
   paintRing(((now - startTime) / 1000 / LOOP_SECONDS) % 1);

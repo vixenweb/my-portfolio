@@ -1,13 +1,72 @@
 :root {
+  --radius: 28px;
+  color-scheme: dark;
+
+  /* ----- Dark (default) ----- */
   --ink: #dfeaed;
   --ink-soft: #dfeaedc4;
-  --night: #03070c;
-  --deep: #07131c;
-  --ice: #4e7f8c;        /* muted icy blue */
-  --ice-light: #8fb3bc;
-  --radius: 28px;
+  --bg: #03070c;
+  --sky: linear-gradient(180deg, #02050a 0%, #040a10 55%, #07131c 100%);
+  --vignette: #000000b3;
+  --grid: #8fb3bc08;
+  --grain-opacity: 0.16;
+  --glow: radial-gradient(ellipse 50% 100% at 50% 100%, #2f667559 0%, #1c46553d 32%, #0f2a3619 62%, transparent 100%);
+
+  --wm-glow: #4e7f8c;
+  --wm-glow-opacity: 0.28;
+  --wm-fill: linear-gradient(180deg, #d7e6ea 6%, #97b5be 40%, #5d8391 76%, #37535f 100%);
+  --wm-shadow:
+    drop-shadow(0 0.025em 0 #061219)
+    drop-shadow(0 0.06em 0.05em #030c12b3)
+    drop-shadow(0 0.16em 0.22em #000000a6);
+
+  --veil: #03070c8c;
+  --pane-light: #b4d0d71f;
+  --pane-border: #a9c6cd26;
+  --pane-shadow: inset 0 1px 0 #ffffff3d, inset 0 -1px 0 #ffffff0f, 0 30px 80px #00000099;
+  --title-shadow: 0 2px 16px #00000073;
+  --aura-opacity: 0.7;
+
+  --btn-bg: #ffffff0f;
+  --btn-bg-hover: #ffffff1c;
+  --btn-border: #ffffff26;
+
   /* Used only if JS is off; script.js animates the real one */
-  --ring-static: conic-gradient(from 0deg, #1f4d73, #3f88ad, #9fd4e6, #e6f6fb, #7cbcd8, #34739f, #234b86, #2f6f8f, #1f4d73);
+  --ring-static: conic-gradient(from 0deg, #eaf9ff, #4f9fc8, #143550, #0f2a3f, #2f78a6, #eaf9ff);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --ink: #0b1d2a;
+  --ink-soft: #0b1d2ab8;
+  --bg: #e3edf3;
+  --sky: linear-gradient(180deg, #f5f9fb 0%, #e3edf3 55%, #c9dce7 100%);
+  --vignette: #0b1d2a24;
+  --grid: #0b1d2a0d;
+  --grain-opacity: 0.1;
+  --glow: radial-gradient(ellipse 50% 100% at 50% 100%, #ffffffe0 0%, #e4f1f8a8 32%, #cfe4ef40 62%, transparent 100%);
+
+  --wm-glow: #5fa4c6;
+  --wm-glow-opacity: 0.3;
+  --wm-fill: linear-gradient(180deg, #0b1d2a 6%, #1b4463 42%, #2f6e92 78%, #4f92b5 100%);
+  --wm-shadow:
+    drop-shadow(0 0.025em 0 #ffffffcc)
+    drop-shadow(0 0.06em 0.06em #0b1d2a26)
+    drop-shadow(0 0.16em 0.25em #0b1d2a40);
+
+  --veil: #e9f1f5a6;
+  --pane-light: #ffffffb3;
+  --pane-border: #ffffffb3;
+  --pane-shadow: inset 0 1px 0 #ffffffe6, inset 0 -1px 0 #0b1d2a14, 0 30px 80px #0b1d2a40;
+  --title-shadow: none;
+  --aura-opacity: 0.5;
+
+  --btn-bg: #ffffff8c;
+  --btn-bg-hover: #ffffffcc;
+  --btn-border: #0b1d2a1f;
+
+  --ring-static: conic-gradient(from 0deg, #0a2f52, #4a9cc4, #cfe6f0, #4a9cc4, #0a2f52);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -17,7 +76,7 @@ html, body { height: 100%; margin: 0; }
 body {
   font-family: "DM Sans", system-ui, sans-serif;
   color: var(--ink);
-  background: var(--night);
+  background: var(--bg);
 }
 .is-locked { overflow: hidden; }
 
@@ -27,10 +86,10 @@ body {
   inset: 0;
   overflow: hidden;
   background:
-    radial-gradient(120% 90% at 50% 0%, transparent 35%, #000000b3 100%),
-    repeating-linear-gradient(90deg, #8fb3bc08 0 1px, transparent 1px 64px),
-    repeating-linear-gradient(0deg,  #8fb3bc08 0 1px, transparent 1px 64px),
-    linear-gradient(180deg, #02050a 0%, #040a10 55%, var(--deep) 100%);
+    radial-gradient(120% 90% at 50% 0%, transparent 35%, var(--vignette) 100%),
+    repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(0deg,  var(--grid) 0 1px, transparent 1px 64px),
+    var(--sky);
 }
 
 /* A wide, gentle wash of light rising from the bottom edge */
@@ -41,17 +100,13 @@ body {
   width: 150vw;
   height: 80vh;
   translate: -50% 0;
-  background: radial-gradient(ellipse 50% 100% at 50% 100%,
-    #2f667559 0%,
-    #1c46553d 32%,
-    #0f2a3619 62%,
-    transparent 100%);
+  background: var(--glow);
 }
 
 .grain {
   position: absolute;
   inset: 0;
-  opacity: 0.16;
+  opacity: var(--grain-opacity);
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 }
@@ -62,7 +117,7 @@ body {
   z-index: 1;
   display: flex;
   justify-content: center;
-  padding: clamp(28px, 8vh, 84px) clamp(20px, 6vw, 100px) 0;
+  padding: clamp(72px, 11vh, 100px) clamp(20px, 6vw, 100px) 0;
 }
 
 .wordmark {
@@ -79,24 +134,21 @@ body {
 .wordmark__glow {
   position: absolute;
   inset: 0;
-  color: var(--ice);
+  color: var(--wm-glow);
   filter: blur(34px);
-  opacity: 0.28;
+  opacity: var(--wm-glow-opacity);
   transform: translateY(0.06em);
 }
 
 .wordmark__text {
   position: relative;
   display: block;
-  background: linear-gradient(180deg, #d7e6ea 6%, #97b5be 40%, #5d8391 76%, #37535f 100%);
+  background: var(--wm-fill);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  filter:
-    drop-shadow(0 0.025em 0 #061219)
-    drop-shadow(0 0.06em 0.05em #030c12b3)
-    drop-shadow(0 0.16em 0.22em #000000a6);
+  filter: var(--wm-shadow);
 }
 
 /* ---------- Blur veil ---------- */
@@ -104,7 +156,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 10;
-  background: #03070c8c;
+  background: var(--veil);
   -webkit-backdrop-filter: blur(9px);
   backdrop-filter: blur(9px);
   animation: fade-in 0.6s ease-out both;
@@ -134,14 +186,11 @@ body {
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: radial-gradient(260px circle at var(--mx) var(--my), #b4d0d71f, transparent 70%);
+  background: radial-gradient(260px circle at var(--mx) var(--my), var(--pane-light), transparent 70%);
   -webkit-backdrop-filter: url(#lg) blur(3px) saturate(180%);
   backdrop-filter: url(#lg) blur(3px) saturate(180%);
-  border: 1px solid #a9c6cd26;
-  box-shadow:
-    inset 0 1px 0 #ffffff3d,
-    inset 0 -1px 0 #ffffff0f,
-    0 30px 80px #00000099;
+  border: 1px solid var(--pane-border);
+  box-shadow: var(--pane-shadow);
 }
 
 /* ---------- Endless light around the edge ----------
@@ -165,7 +214,7 @@ body {
   mask-composite: exclude;
 }
 
-.notice__ring { --w: 1.5px; z-index: 1; }
+.notice__ring { --w: 2px; z-index: 1; }
 
 /* Same ring, blurred, for the glow */
 .notice__aura {
@@ -174,7 +223,7 @@ body {
   border-radius: inherit;
   pointer-events: none;
   filter: blur(9px);
-  opacity: 0.55;
+  opacity: var(--aura-opacity);
 }
 .notice__aura::before { --w: 4px; }
 
@@ -194,7 +243,7 @@ body {
   font-size: clamp(1.6rem, 5vw, 2.2rem);
   line-height: 1.15;
   letter-spacing: -0.02em;
-  text-shadow: 0 2px 16px #00000073;
+  text-shadow: var(--title-shadow);
 }
 
 .notice__text {
@@ -204,6 +253,34 @@ body {
   line-height: 1.65;
   color: var(--ink-soft);
 }
+
+/* ---------- Theme toggle ---------- */
+.theme-toggle {
+  position: fixed;
+  z-index: 12;
+  top: clamp(14px, 3vh, 28px);
+  right: clamp(14px, 3vw, 28px);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--ink);
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: 50%;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.theme-toggle:hover { background: var(--btn-bg-hover); }
+.theme-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* Dark shows the sun (switch to light); light shows the moon */
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
 
 @keyframes fade-in   { from { opacity: 0; } }
 /* Transform only: fading opacity would flatten the glass while it plays */
